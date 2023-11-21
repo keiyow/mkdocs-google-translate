@@ -7,6 +7,7 @@ class GoogleTranslatePlugin(BasePlugin):
     config_scheme = {
         ('url', config_options.Type(str, default='')),
         ('relative_url_syntax', config_options.Type(str, default='%GT_RELATIVE_URL%')),
+        ("prefix", config_options.Type(str, default="/")),
     }
 
     def on_config(self, config):
@@ -26,6 +27,6 @@ class GoogleTranslatePlugin(BasePlugin):
         if not matches:  # pragma: no cover
             return output
         for match in matches:
-            new_url_string = f'href="https://{self.config["url"]}.translate.goog/{page.url}{match.group(2)}'
+            new_url_string = f'href="https://{self.config["url"]}.translate.goog{self.config.get("prefix")}{page.url}{match.group(2)}'
             output = output.replace(match.group(1), new_url_string)
         return output
